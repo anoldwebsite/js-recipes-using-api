@@ -1,13 +1,15 @@
 {
     //preset is a collection of code transform plugin which is like a piece of code that applies the actual transformation to our code.
-    "preset": [
-        "env", {
-            "target": {
+    "presets": [
+        ["@babel/env", {
+            "useBuiltIns": "usage",
+            "corejs": "3",
+            "targets": {
                 "browsers": [
-                    "last 5 versions", //Last 5 versions of all the browsers.
-                    "ie >= 8" 
+                    "last 5 versions",
+                    "ie >= 8"
                 ]
             }
-        }
+        }]
     ]
 }
