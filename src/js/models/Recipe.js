@@ -103,5 +103,13 @@ export default class Recipe {
             return ingredientObj;//Each iteration of the map function must return.
         });//method map ends here.
         this.ingredients = newIngredients;
+    }//method parseIngredients ends here.
+
+    updateServings(type){
+        const newServings = (type === 'dec') ? this.servings - 1 : this.servings + 1;
+        this.ingredients.forEach(oneIngredient => {
+            oneIngredient.count *= (newServings / this.servings);
+        });
+        this.servings = newServings;
     }
-}
+}//class Recipe ends here.

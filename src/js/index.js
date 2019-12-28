@@ -21,7 +21,7 @@ const controlSearch = async () => {
     const query = searchView.getInput(); //Getting the search term from the search form on the UI
     if (query) {
         //Make a new search object and add it to the object state
-        state.search = new Search(query);
+        state.search = new Search(query.toLowerCase());
         //Prepare UI for the result
         searchView.clearInput();
         searchView.clearResults();
@@ -104,3 +104,21 @@ const controlRecipe = async () => {
 
 //Attaching two or more events to the event listener when they call the same function.
 ['hashchange', 'load'].forEach(event => window.addEventListener(event, controlRecipe));
+
+/* By the time we load the page, the buttons + and - to increase/decrease the ingredients are 
+not there. So, we have to use event delegation but the recipe element is there, and we can
+attach the event to it and then use the target propery of the event to find out if + was clicked or -. */
+//Handling recipe button + and - clicks
+elements.recipe.addEventListener('click', e => {//e is for event
+    if(e.target.matches('.btn-decrease, .btn-decrease *')){//* means any child of .btn-decrease element
+        if(state.recipe.servings > 1){
+            state.recipe.updateServings('dec');//updateSErvings is method of class Recipe in Recipe.js
+        }
+    }else if(e.target.matches('.btn-increase, .btn-increase *')){
+            if(state.recipe.servings < 10){//This app allows up to 10 servings
+                state.recipe.updateServings('inc');
+            }
+    }
+    recipeView.updateServingsIngredients(state.recipe);
+}
+);
