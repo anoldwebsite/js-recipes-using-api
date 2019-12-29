@@ -22,7 +22,7 @@ export const highlightSelected = id => {
     recipesLinksArray.forEach(el => {
         el.classList.remove('results__link--active');
     });
-    //a[href=#${id}] ===> a is for link; # is part of url for any recipe and id is for the id of the recipe.
+    //In the search result, select the link that has id === the id passed to this function. # is part of url for any recipe and id is for the id of the recipe.
     const itemToSelect = document.querySelector(`.results__link[href*="${id}"]`);
     if (itemToSelect) {
         itemToSelect.classList.add('results__link--active');
@@ -36,10 +36,10 @@ export const highlightSelectedRecipe = (id, prevId = '') => {
     if (prevId && prevSelectedItem) {//Remove the previous highlighting.
         prevSelectedItem.classList.remove('results__link--active');
     }
-    document.querySelector(`a[href="#${id}"]`).classList.add('results__link--active');//Highlight the currently selected recipe.
+    document.querySelector(`.results__link[href="#${id}"]`).classList.add('results__link--active');//Highlight the currently selected recipe.
 };
 
-const limitRecipeTitle = (recipeTitle, limitChar = 17) => {
+export const limitRecipeTitle = (recipeTitle, limitChar = 17) => {
     const newTitle = [];
     if (recipeTitle.length > limitChar) {
         recipeTitle.split(' ').reduce((accumulator, currentWord) => {

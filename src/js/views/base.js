@@ -6,7 +6,9 @@ export const elements = {
     searchResultPages: document.querySelector('.results__pages'),//<div class="results__pages"> is the container for pagination buttons in index.html
     recipe: document.querySelector('.recipe'),
     recipeLinks: document.querySelectorAll('.results__link'),
-    shopping: document.querySelector('.shopping__list')
+    shopping: document.querySelector('.shopping__list'),
+    likesMenu: document.querySelector('.likes__field'),
+    likesList: document.querySelector('.likes__list')
 };
 //We have a separate object defined below for the loader because the loader is not on the page when the page is loaded untill we search for some recipe.
 export const elementStrings = {

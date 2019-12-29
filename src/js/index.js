@@ -7,7 +7,7 @@ import { elements, renderLoader, clearLoader } from './views/base';
 import * as searchView from './views/searchView';//Importing * (everything) fom searchView.js and renaming as searchView here.
 import * as recipeView from './views/recipeView';//Importing everything as recipeView here.
 import * as listView from './views/listView';
-
+import * as likesView from './views/likesView';
 /*
 Global state of the app
     *** Search object - the object that we get when we search for some recipe
@@ -70,6 +70,10 @@ elements.searchResultPages.addEventListener('click', e => {
 //Recipe controller
 //********************************************* */
 const controlRecipe = async () => {
+    //************************************************ */
+    const numLikes = (state.likes) ? state.likes.getNumLikes() : 0;
+    likesView.toggleLikeMenu(numLikes);//Delete this and the line above after browser persistance step ?????
+    //************************************************ */
     //window.location is the entire url. We want the id which is in the hash part, so window.location.hash.replace
     //
     const id = window.location.hash.replace('#', '');
@@ -101,7 +105,10 @@ const controlRecipe = async () => {
             //Render recipe
             //console.log(state.recipe);
             clearLoader();
-            recipeView.renderRecipe(state.recipe);
+                //************************************************ */
+            const isLikedAlready = (state.likes) ? state.likes.isLiked(id) : false;//Delete this line after browser persistence
+                //************************************************ */
+            recipeView.renderRecipe(state.recipe, isLikedAlready);
         } catch (error) {
             alert(`index.js says: ${error}`);
         }
@@ -131,7 +138,7 @@ const controlList = () => {
 };//controlList ends here.
 
 //********************************************* */
-//Like controller -- Manages the Shopping list 
+//Like controller -- Manages the likes menu and the heart shaped button for likes. 
 //********************************************* */
 const controlLike = () => {
     if (!state.recipe) return;
@@ -147,19 +154,22 @@ const controlLike = () => {
             state.recipe.image
         );
         //Togle the heart shaped button on the UI
-
+        //likesView.toggleLikeBtn(state.likes.isLiked(currentID));
         //Add like to the UI list
-        console.log(state.likes);
+        likesView.renderLike(newLike);
+        //console.log(state.likes);
     } else {
         //User has already liked the current recipe
         //Remove like from the state object
         state.likes.deleteLike(currentID);
         //Togle the heart shaped button on the UI
-
+        //likesView.toggleLikeBtn(state.likes.isLiked(currentID));
         //Remove like from UI list
-        console.log(state.likes);
+        likesView.deleteLike(currentID);
+        //console.log(state.likes);
     }
-
+    likesView.toggleLikeBtn(state.likes.isLiked(currentID));
+    likesView.toggleLikeMenu(state.likes.getNumLikes());
 }
 //********************************************* */
 
