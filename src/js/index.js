@@ -1,9 +1,11 @@
 // Global app controller
 import Search from './models/Serach';
 import Recipe from './models/Recipe';
+import List from './models/List';
 import { elements, renderLoader, clearLoader } from './views/base';
 import * as searchView from './views/searchView';//Importing * (everything) fom searchView.js and renaming as searchView here.
 import * as recipeView from './views/recipeView';//Importing everything as recipeView here.
+import * as listView from './views/listView';
 /*
 Global state of the app
     *** Search object - the object that we get when we search for some recipe
@@ -12,7 +14,9 @@ Global state of the app
     *** Liked recipes - The recipes that we have marked as liked.
 */
 const state = {};
-
+//Testing starts
+window.state = state;
+//Testing ends
 //********************************************* */
 //Search controller
 //********************************************* */
@@ -86,7 +90,7 @@ const controlRecipe = async () => {
             //Get recipe data
             // getRecipe() method of class Recipe in file Recipe.js will populate the recipe object properties: title, author, image, url and ingredients
             await state.recipe.getRecipe();//We need it inside a try catch block in case getRecipe() promise results in reject instead of resolve.
-            console.log(state.recipe);
+            //console.log(state.recipe);
             //parse ingredients by calling the method in the model class Recipe in file Recipe.js
             state.recipe.parseIngredients();
             //Calculate servings and recipe preparation time
@@ -105,20 +109,63 @@ const controlRecipe = async () => {
 //Attaching two or more events to the event listener when they call the same function.
 ['hashchange', 'load'].forEach(event => window.addEventListener(event, controlRecipe));
 
-/* By the time we load the page, the buttons + and - to increase/decrease the ingredients are 
-not there. So, we have to use event delegation but the recipe element is there, and we can
-attach the event to it and then use the target propery of the event to find out if + was clicked or -. */
+//********************************************* */
+//List controller -- Manages the Shopping list 
+//********************************************* */
+const controlList = () => {
+    //Create a new Shopping list if thre is none.
+    if(!state.list){
+        state.list = new List();
+    }
+    
+    state.recipe.ingredients.forEach(element => {
+        //Add each ingredient to the list
+        const item = state.list.addItem(element.count, element.unit, element.ingredient);
+        //Add each ingredient to the User Interface.
+        listView.renderShoppingListItem(item);
+        //listView.rednerItem(item);
+    });
+
+};//controlList ends here.
+
+//Handle delete and update list item events.
+elements.shopping.addEventListener('click', e => {
+    //Get the id of the item on the shopping list that got the click
+    const id = e.target.closest('.shopping__item').dataset.itemid;
+    //Handle the delete button
+    if(e.target.matches('.shopping__delete, .shopping__delete *')){
+        //Delete the item form the state object state={};
+        const deletedItem = state.list.deleteItem(id)
+        //Delete the item from the UI
+        if(deletedItem) listView.deleteItemFromUI(id);
+    }else if(e.target.matches('.shopping__count-value')){
+        const newValue = parseFloat(e.target.value, 10);//10 means decimal system of numbers.
+        state.list.updateCount(id, newValue);
+    }
+
+});
+
+/* By the time we load the page, the buttons + and - to increase/decrease the ingredients 
+and the buttons to increase/decrease count of items in the shopping list are 
+not there. So, we have to use event delegation. Since the recipe element is there at
+the load time, and we can attach the event to it and then use the target propery of the
+ event to find out if + was clicked or -. */
 //Handling recipe button + and - clicks
 elements.recipe.addEventListener('click', e => {//e is for event
     if(e.target.matches('.btn-decrease, .btn-decrease *')){//* means any child of .btn-decrease element
         if(state.recipe.servings > 1){
             state.recipe.updateServings('dec');//updateSErvings is method of class Recipe in Recipe.js
+            recipeView.updateServingsIngredients(state.recipe);
         }
     }else if(e.target.matches('.btn-increase, .btn-increase *')){
             if(state.recipe.servings < 10){//This app allows up to 10 servings
                 state.recipe.updateServings('inc');
+                recipeView.updateServingsIngredients(state.recipe);
             }
+    }else if(e.target.matches('.recipe__btn--add, .recipe__btn--add *')){//* means any sub class of class .recipe__btn--add
+        controlList();
     }
-    recipeView.updateServingsIngredients(state.recipe);
 }
 );
+
+//window.list = new List();//For testing go to console in browser and test creating an item and then deleting/updating.
