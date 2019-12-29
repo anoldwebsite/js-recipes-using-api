@@ -2,10 +2,12 @@
 import Search from './models/Serach';
 import Recipe from './models/Recipe';
 import List from './models/List';
+import Likes from './models/Likes';
 import { elements, renderLoader, clearLoader } from './views/base';
 import * as searchView from './views/searchView';//Importing * (everything) fom searchView.js and renaming as searchView here.
 import * as recipeView from './views/recipeView';//Importing everything as recipeView here.
 import * as listView from './views/listView';
+
 /*
 Global state of the app
     *** Search object - the object that we get when we search for some recipe
@@ -114,10 +116,10 @@ const controlRecipe = async () => {
 //********************************************* */
 const controlList = () => {
     //Create a new Shopping list if thre is none.
-    if(!state.list){
+    if (!state.list) {
         state.list = new List();
     }
-    
+
     state.recipe.ingredients.forEach(element => {
         //Add each ingredient to the list
         const item = state.list.addItem(element.count, element.unit, element.ingredient);
@@ -128,17 +130,50 @@ const controlList = () => {
 
 };//controlList ends here.
 
+//********************************************* */
+//Like controller -- Manages the Shopping list 
+//********************************************* */
+const controlLike = () => {
+    if (!state.recipe) return;
+    if (!state.likes) state.likes = new Likes();
+    const currentID = state.recipe.id;
+    if (!state.likes.isLiked(currentID)) {
+        //User has not liked the current recipe
+        //Add like to the state object
+        const newLike = state.likes.addLike(
+            currentID,
+            state.recipe.title,
+            state.recipe.author,
+            state.recipe.image
+        );
+        //Togle the heart shaped button on the UI
+
+        //Add like to the UI list
+        console.log(state.likes);
+    } else {
+        //User has already liked the current recipe
+        //Remove like from the state object
+        state.likes.deleteLike(currentID);
+        //Togle the heart shaped button on the UI
+
+        //Remove like from UI list
+        console.log(state.likes);
+    }
+
+}
+//********************************************* */
+
 //Handle delete and update list item events.
 elements.shopping.addEventListener('click', e => {
     //Get the id of the item on the shopping list that got the click
     const id = e.target.closest('.shopping__item').dataset.itemid;
     //Handle the delete button
-    if(e.target.matches('.shopping__delete, .shopping__delete *')){
+    if (e.target.matches('.shopping__delete, .shopping__delete *')) {
         //Delete the item form the state object state={};
         const deletedItem = state.list.deleteItem(id)
         //Delete the item from the UI
-        if(deletedItem) listView.deleteItemFromUI(id);
-    }else if(e.target.matches('.shopping__count-value')){
+        if (deletedItem) listView.deleteItemFromUI(id);
+    } else if (e.target.matches('.shopping__count-value')) {
         const newValue = parseFloat(e.target.value, 10);//10 means decimal system of numbers.
         state.list.updateCount(id, newValue);
     }
@@ -152,18 +187,20 @@ the load time, and we can attach the event to it and then use the target propery
  event to find out if + was clicked or -. */
 //Handling recipe button + and - clicks
 elements.recipe.addEventListener('click', e => {//e is for event
-    if(e.target.matches('.btn-decrease, .btn-decrease *')){//* means any child of .btn-decrease element
-        if(state.recipe.servings > 1){
+    if (e.target.matches('.btn-decrease, .btn-decrease *')) {//* means any child of .btn-decrease element
+        if (state.recipe.servings > 1) {
             state.recipe.updateServings('dec');//updateSErvings is method of class Recipe in Recipe.js
             recipeView.updateServingsIngredients(state.recipe);
         }
-    }else if(e.target.matches('.btn-increase, .btn-increase *')){
-            if(state.recipe.servings < 10){//This app allows up to 10 servings
-                state.recipe.updateServings('inc');
-                recipeView.updateServingsIngredients(state.recipe);
-            }
-    }else if(e.target.matches('.recipe__btn--add, .recipe__btn--add *')){//* means any sub class of class .recipe__btn--add
-        controlList();
+    } else if (e.target.matches('.btn-increase, .btn-increase *')) {
+        if (state.recipe.servings < 10) {//This app allows up to 10 servings
+            state.recipe.updateServings('inc');
+            recipeView.updateServingsIngredients(state.recipe);
+        }
+    } else if (e.target.matches('.recipe__btn--add, .recipe__btn--add *')) {//* means any sub class of class .recipe__btn--add
+        controlList();//Add ingredients to shopping list.
+    } else if (e.target.matches('.recipe__love, .recipe__love *')) {
+        controlLike();//Add recipe to likes.
     }
 }
 );
