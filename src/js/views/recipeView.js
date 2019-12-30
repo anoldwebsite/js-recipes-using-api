@@ -4,7 +4,13 @@ import { Fraction } from 'fractional';
 export const clearRecipe = () => {
     elements.recipe.innerHTML = '';
 };
-const formatCount = count => {
+const formatCount = countRecieved => {
+
+    if(!countRecieved) {
+        alert("Method formatcount says: Some problem with the count of the ingredient!");
+        return '?';
+    }
+    const count = Math.round(countRecieved * 10000) / 10000;//Decimal part up to four digits, so 10000
     if (count) {
         //count = 2.5 should give 2 1/2 but 0.5 should give 1/2
         const [integerPart, decimalPart] = count.toString().split('.').map(x => parseInt(x, 10));

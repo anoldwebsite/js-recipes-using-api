@@ -17,7 +17,7 @@ Global state of the app
 */
 const state = {};
 //Testing starts
-window.state = state;
+//window.state = state;
 //Testing ends
 //********************************************* */
 //Search controller
@@ -71,8 +71,9 @@ elements.searchResultPages.addEventListener('click', e => {
 //********************************************* */
 const controlRecipe = async () => {
     //************************************************ */
-    const numLikes = (state.likes) ? state.likes.getNumLikes() : 0;
-    likesView.toggleLikeMenu(numLikes);//Delete this and the line above after browser persistance step ?????
+    //These steps were required before we wrote the code for persisting data in the local storage of the broswer.
+    //const numLikes = (state.likes) ? state.likes.getNumLikes() : 0;
+    //likesView.toggleLikeMenu(numLikes);//Delete this and the line above after browser persistance step ?????
     //************************************************ */
     //window.location is the entire url. We want the id which is in the hash part, so window.location.hash.replace
     //
@@ -106,9 +107,11 @@ const controlRecipe = async () => {
             //console.log(state.recipe);
             clearLoader();
                 //************************************************ */
-            const isLikedAlready = (state.likes) ? state.likes.isLiked(id) : false;//Delete this line after browser persistence
-                //************************************************ */
-            recipeView.renderRecipe(state.recipe, isLikedAlready);
+                //These steps were required before we wrote the code for persisting data in the local storage of the broswer.
+                //const isLikedAlready = (state.likes) ? state.likes.isLiked(id) : false;//Delete this line after browser persistence
+                //recipeView.renderRecipe(state.recipe, isLikedAlready);
+            //************************************************ */
+            recipeView.renderRecipe(state.recipe, state.likes.isLiked(id));
         } catch (error) {
             alert(`index.js says: ${error}`);
         }
@@ -189,7 +192,21 @@ elements.shopping.addEventListener('click', e => {
     }
 
 });
-
+//****************************************************************************************** */
+//Restore LIKED recipes on page load from the local storage of Browser, saved by us formerly.
+//****************************************************************************************** */
+window.addEventListener('load', () => {
+    state.likes = new Likes();//Creating a new object of type Likes() in the file Likes.js
+    state.likes.readDataFromBrowserStorage();//Restoring likes from the Broswer local storage.
+    //Toggle the likes menu button
+    likesView.toggleLikeMenu(state.likes.getNumLikes());
+    //Render the existing likes so that the user can see them in the likes menu and click on them.
+    //state.likes.likes is an array in the class Likes in file Likes.js and it stores likes.
+    for (const like of state.likes.likes) {
+        likesView.renderLike(like);
+    }
+});
+//****************************************************************************************** */
 /* By the time we load the page, the buttons + and - to increase/decrease the ingredients 
 and the buttons to increase/decrease count of items in the shopping list are 
 not there. So, we have to use event delegation. Since the recipe element is there at
