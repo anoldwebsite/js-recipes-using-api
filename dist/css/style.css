@@ -391,6 +391,28 @@ body {
       height: 2.75rem;
       width: 2.75rem;
       fill: #fff; }
+      .recipe__hate {
+        font-size: 1.2rem;
+        font-weight: bolder;
+        background-image: linear-gradient(to right bottom, #FBDB89, #ff0000);
+        border-radius: 70%;
+        border: none;
+        cursor: pointer;
+        height: 5.5rem;
+        width: 5.5rem;
+        margin-left: auto;
+        transition: all .2s;
+        display: flex;
+        align-items: center;
+        justify-content: center; }
+        .recipe__hate:hover {
+          transform: scale(1.07); }
+        .recipe__hate:focus {
+          outline: none; }
+        .recipe__hate svg {
+          height: 2.75rem;
+          width: 2.75rem;
+          fill: #fff; }
   .recipe__ingredients {
     padding: 4rem 5rem;
     font-size: 1.5rem;

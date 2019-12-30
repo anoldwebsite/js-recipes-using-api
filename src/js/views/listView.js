@@ -20,5 +20,27 @@ export const renderShoppingListItem = item => {
 
 export const deleteItemFromUI = id => {
     const itemNode = document.querySelector(`[data-itemid="${id}"]`);//Select the item using its id.
-    if(itemNode) itemNode.parentElement.removeChild(itemNode);//We have to move up to the parent level to remove the child.
+    if (itemNode) itemNode.parentElement.removeChild(itemNode);//We have to move up to the parent level to remove the child.
 };
+
+export const toggleEmptyShoppingListBtn = (itemsInShoppingList) => {
+    const btnEmptyList = document.querySelector('.shopping__list--empty');//btnEmptyList in base.js //shopping__list--empty
+    if (btnEmptyList) {
+        if (itemsInShoppingList > 0) {
+            document.querySelector('.shopping__list--empty').style.visibility = 'visible';
+        } else if (itemsInShoppingList <= 0) {
+            document.querySelector('.shopping__list--empty').style.visibility = 'hidden';
+        }
+    }
+};
+
+/* export const toggleEmptyShoppingListBtn = (itemsInShoppingList) => {
+    const btnEmptyList = document.querySelector('.recipe__btn--delete-all');
+    if (btnEmptyList) {
+        if (itemsInShoppingList > 0) {
+            document.querySelector('.recipe__btn--delete-all').style.visibility = 'visible';
+        } else if (itemsInShoppingList <= 0) {
+            document.querySelector('.recipe__btn--delete-all').style.visibility = 'hidden';
+        }
+    }
+}; */

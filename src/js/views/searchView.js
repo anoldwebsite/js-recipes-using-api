@@ -32,11 +32,21 @@ export const highlightSelected = id => {
 };
 
 export const highlightSelectedRecipe = (id, prevId = '') => {
-    const prevSelectedItem = document.querySelector(`.results__link[href*="${prevId}"]`);
-    if (prevId && prevSelectedItem) {//Remove the previous highlighting.
-        prevSelectedItem.classList.remove('results__link--active');
+    if(prevId){
+        const prevSelectedItem = document.querySelector(`.results__link[href*="${prevId}"]`);
+        if (prevSelectedItem) {//Remove the previous highlighting.
+            if(prevSelectedItem.classList){
+                prevSelectedItem.classList.remove('results__link--active');
+            }
+        }
     }
-    document.querySelector(`.results__link[href="#${id}"]`).classList.add('results__link--active');//Highlight the currently selected recipe.
+    
+    if(id){
+        const newlySelectedItem = document.querySelector(`.results__link[href="#${id}"]`);
+        if(newlySelectedItem){
+            document.querySelector(`.results__link[href="#${id}"]`).classList.add('results__link--active');//Highlight the currently selected recipe.
+        }
+    }
 };
 
 export const limitRecipeTitle = (recipeTitle, limitChar = 17) => {

@@ -19,9 +19,16 @@ export default class Likes {
         const index = this.likes.findIndex(element => element.id === id);
         if (index !== -1) {//Item was found in the likes array.
             this.likes.splice(index, 1);//1 means remove one item.
-            //Save this like in the Broswer local storage
-            this.persistData();
+            //Remove this like in the Broswer local storage
+            this.removeData();//Add a new copy of the array likes in the local storage of broswer.
         }
+    }
+    removeData(){
+        localStorage.removeItem('likes');
+        this.persistData();
+    }
+    removeAllData(){
+        localStorage.removeItem('likes');
     }
     getNumLikes() {
         return this.likes.length;

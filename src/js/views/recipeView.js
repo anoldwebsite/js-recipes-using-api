@@ -6,7 +6,7 @@ export const clearRecipe = () => {
 };
 const formatCount = countRecieved => {
 
-    if(!countRecieved) {
+    if (!countRecieved) {
         alert("Method formatcount says: Some problem with the count of the ingredient!");
         return '?';
     }
@@ -82,6 +82,12 @@ export const renderRecipe = (recipe, isLiked) => {
                 <use href="img/icons.svg#icon-heart${isLiked ? '' : '-outlined'}"></use>
             </svg>
         </button>
+        <button class="recipe__hate">
+            <svg class="header__likes">
+                <use href="img/icons.svg#icon-circle-with-cross'}"></use>
+            </svg>
+            <span>Unlike All</span>
+        </button>
     </div>
 
     <div class="recipe__ingredients">
@@ -95,8 +101,8 @@ export const renderRecipe = (recipe, isLiked) => {
             </svg>
             <span>Add to shopping list</span>
         </button>
-    </div>
 
+    </div>
     <div class="recipe__directions">
         <h2 class="heading-2">How to cook it</h2>
         <p class="recipe__directions-text">

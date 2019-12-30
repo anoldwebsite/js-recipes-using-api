@@ -8,7 +8,8 @@ export const elements = {
     recipeLinks: document.querySelectorAll('.results__link'),
     shopping: document.querySelector('.shopping__list'),
     likesMenu: document.querySelector('.likes__field'),
-    likesList: document.querySelector('.likes__list')
+    likesList: document.querySelector('.likes__list'),
+    btnEmptyList: document.querySelector('.shopping__list--empty')
 };
 //We have a separate object defined below for the loader because the loader is not on the page when the page is loaded untill we search for some recipe.
 export const elementStrings = {

@@ -5,6 +5,14 @@ export const toggleLikeBtn = isLiked => {
     const iconString = isLiked ? 'icon-heart' : 'icon-heart-outlined';
     document.querySelector('.recipe__love use').setAttribute('href', `img/icons.svg#${iconString}`);
 };
+export const toggleHateBtn = (numLikes) => {//??????????????
+    const removeAllLikesBtn = document.querySelector('.recipe__hate use');
+    if(removeAllLikesBtn && numLikes > 0){
+        removeAllLikesBtn.style.visibility = 'visible';
+    }else if(removeAllLikesBtn && numLikes <= 0){
+        removeAllLikesBtn.style.visibility = 'hidden';
+    }
+};
 
 export const toggleLikeMenu = numLikes => {
     elements.likesMenu.style.visibility = (numLikes > 0) ? 'visible' : 'hidden';
@@ -32,7 +40,7 @@ export const deleteLike = id => {
     const element = document.querySelector(`.likes__link[href*="${id}"]`).parentElement;
     /* We select the parent element because we want to delete the list item <li></li> too as
     that is not needed once the anchored/linked text for the previously LIKED item is deleted. */
-    if(element){
+    if (element) {
         //To remove <li></li> move one level up to the parent, <ul></ul>, to be able to remove the child.
         element.parentElement.removeChild(element);
     }

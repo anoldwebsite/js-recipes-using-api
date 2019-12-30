@@ -15,10 +15,13 @@ Global state of the app
     *** Shopping list object - The items that we have added to the shopping cart
     *** Liked recipes - The recipes that we have marked as liked.
 */
+
 const state = {};
+
 //Testing starts
 //window.state = state;
 //Testing ends
+
 //********************************************* */
 //Search controller
 //********************************************* */
@@ -49,10 +52,12 @@ const controlSearch = async () => {
 
     }
 };
+
 elements.searchForm.addEventListener('submit', e => {
     e.preventDefault(); //Prevents navigating to another page when the Search button is clicked
     controlSearch();
 });
+
 //We can not attach event listner to the pagination buttons as they are not there when the page loads, so
 //we attach it to the parent container which has a class of '.results__pages' and there we see recipes too.
 elements.searchResultPages.addEventListener('click', e => {
@@ -66,6 +71,7 @@ elements.searchResultPages.addEventListener('click', e => {
         searchView.renderRecipes(state.search.result, goToPage);//10 means show ten recipes per page
     }
 });
+
 //********************************************* */
 //Recipe controller
 //********************************************* */
@@ -106,10 +112,10 @@ const controlRecipe = async () => {
             //Render recipe
             //console.log(state.recipe);
             clearLoader();
-                //************************************************ */
-                //These steps were required before we wrote the code for persisting data in the local storage of the broswer.
-                //const isLikedAlready = (state.likes) ? state.likes.isLiked(id) : false;//Delete this line after browser persistence
-                //recipeView.renderRecipe(state.recipe, isLikedAlready);
+            //************************************************ */
+            //These steps were required before we wrote the code for persisting data in the local storage of the broswer.
+            //const isLikedAlready = (state.likes) ? state.likes.isLiked(id) : false;//Delete this line after browser persistence
+            //recipeView.renderRecipe(state.recipe, isLikedAlready);
             //************************************************ */
             recipeView.renderRecipe(state.recipe, state.likes.isLiked(id));
         } catch (error) {
@@ -137,8 +143,28 @@ const controlList = () => {
         listView.renderShoppingListItem(item);
         //listView.rednerItem(item);
     });
-
+    //Enable the button to empty the shopping list at one go.
+    listView.toggleEmptyShoppingListBtn(state.list.items.length);
 };//controlList ends here.
+
+//***************************************************************************************** */
+//emptyShoppingList -- Empties the shopping list in one go with a click of a button. 
+//***************************************************************************************** */
+
+elements.btnEmptyList.addEventListener('click', e => {
+    //Remove all ingredients from shopping list.
+    emptyShoppingList();
+});
+//****************************************************************************** */
+const emptyShoppingList = () => {
+    if (!state.list) return;
+    //Remove all ingredient from the shopping list
+    state.list.items = [];
+    //Remove this item from the shopping list
+    elements.shopping.innerHTML = '';
+    //Disable the button for emptying the shopping list
+    listView.toggleEmptyShoppingListBtn(0);
+};
 
 //********************************************* */
 //Like controller -- Manages the likes menu and the heart shaped button for likes. 
@@ -174,8 +200,30 @@ const controlLike = () => {
     likesView.toggleLikeBtn(state.likes.isLiked(currentID));
     likesView.toggleLikeMenu(state.likes.getNumLikes());
 }
-//********************************************* */
 
+//********************************************* */
+//emptyLikesList -- Unlike all my likes in one go 
+//********************************************* */
+const emptyLikesList = () => {
+    if (!state.recipe || !state.likes) return;
+    state.likes.likes.forEach(likeObj => state.likes.deleteLike(likeObj.id));
+    state.likes.likes = [];
+    console.log(state.likes.likes);
+    state.likes.removeAllData();
+    //Remove all likes
+/*     for (const likeObj of state.likes.likes) {
+        let itemIsliked = state.likes.isLiked(likeObj);
+        if(itemIsliked) {
+            itemIsliked = false;
+        }
+        likesView.toggleLikeBtn(itemIsliked);
+        likesView.deleteLike(likeObj.id);
+        state.likes.deleteLike(likeObj.id);//It deletes the like from the state.likes.likes array and from the local storage in browser.
+    } */
+    likesView.toggleHateBtn(state.likes.likes.length);
+    likesView.toggleLikeMenu(state.likes.getNumLikes());
+}
+//*************************************************************************** */
 //Handle delete and update list item events.
 elements.shopping.addEventListener('click', e => {
     //Get the id of the item on the shopping list that got the click
@@ -190,12 +238,13 @@ elements.shopping.addEventListener('click', e => {
         const newValue = parseFloat(e.target.value, 10);//10 means decimal system of numbers.
         state.list.updateCount(id, newValue);
     }
-
 });
 //****************************************************************************************** */
 //Restore LIKED recipes on page load from the local storage of Browser, saved by us formerly.
 //****************************************************************************************** */
 window.addEventListener('load', () => {
+    //On load hide the button to empty the shopping list.
+    elements.btnEmptyList.style.visibility = 'hidden';
     state.likes = new Likes();//Creating a new object of type Likes() in the file Likes.js
     state.likes.readDataFromBrowserStorage();//Restoring likes from the Broswer local storage.
     //Toggle the likes menu button
@@ -228,6 +277,9 @@ elements.recipe.addEventListener('click', e => {//e is for event
         controlList();//Add ingredients to shopping list.
     } else if (e.target.matches('.recipe__love, .recipe__love *')) {
         controlLike();//Add recipe to likes.
+    } else if (e.target.matches('.recipe__hate, .recipe__hate *')) {
+        //Remove all likes from the like list in one go.
+        emptyLikesList();
     }
 }
 );
