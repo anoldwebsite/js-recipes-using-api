@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { urlQuery } from '../config';
+import { renderError } from '../views/recipeView';
 
 export default class Search {
     //Constructor method
@@ -13,7 +14,8 @@ export default class Search {
             this.result = res.data.recipes;
             //console.log(this.result.forEach(element => console.log(`Id: ${element.recipe_id}, Title: ${element.title}`)));
         } catch (error) {
-            alert(`Search.js says: ${error}`);
+            renderError();
+            //alert(`Search.js says: ${error}`);
             //To Do ????
             //Handle status 400 page not found and other such errors 
         }

@@ -4,6 +4,12 @@ import { Fraction } from 'fractional';
 export const clearRecipe = () => {
     elements.recipe.innerHTML = '';
 };
+export const renderError = () => {
+    const markup = `
+        <h1>The recipe you searched for is not available. We might add it soon!</h1>
+    `;
+    elements.recipe.insertAdjacentHTML('afterbegin', markup);
+};
 const formatCount = countRecieved => {
 
     if (!countRecieved) {
